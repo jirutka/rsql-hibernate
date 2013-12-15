@@ -24,6 +24,7 @@
 package cz.jirutka.rsql.hibernate;
 
 import cz.jirutka.rsql.parser.model.Comparison;
+
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
@@ -122,10 +123,43 @@ public abstract class AbstractCriterionBuilder {
             case GREATER_EQUAL : return createGreaterEqual(propertyPath, argument);
             case LESS_THAN : return createLessThan(propertyPath, argument);
             case LESS_EQUAL : return createLessEqual(propertyPath, argument);
+            default:
         }
         throw new IllegalArgumentException("Unknown operator: " + operator);
     }
     
+    protected Criterion createCriterion(String propertyPath, Comparison operator, Object[] arguments) {
+        LOG.trace("Creating criterion: {} {} {}", 
+                new Object[]{propertyPath, operator, arguments});
+        
+        switch (operator) {
+            case IN : return createIn(propertyPath, arguments);
+            case OUT : return createOut(propertyPath, arguments);
+            default:
+        }
+        throw new IllegalArgumentException("Unknown operator: " + operator);
+    }
+    /**
+     * Apply an "in" constraint to the named property.
+     * 
+     * @param propertyPath property name prefixed with an association alias
+     * @param argument values
+     * @return Criterion
+     */
+    protected Criterion createIn(String propertyPath, Object[] arguments) {
+        return Restrictions.in(propertyPath, arguments);
+    }
+
+    /**
+     * Apply an "out" constraint to the named property.
+     * 
+     * @param propertyPath property name prefixed with an association alias
+     * @param argument values
+     * @return Criterion
+     */
+    protected Criterion createOut(String propertyPath, Object[] arguments) {
+        return Restrictions.not(Restrictions.in(propertyPath, arguments));
+    }
     /**
      * Apply an "equal" constraint to the named property.
      * 

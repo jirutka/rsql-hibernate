@@ -86,6 +86,13 @@ public abstract class AbstractCriterionBuilderTest {
         actual = instance.createCriterion(property, Comparison.LESS_EQUAL, -42.2);
         assertEquals(exptected.toString(), actual.toString());
 
+        exptected = Restrictions.in(property, new Object[] {2, 3});
+        actual = instance.createCriterion(property, Comparison.IN, new Object[] {2, 3});
+        assertEquals(exptected.toString(), actual.toString());
+
+        exptected = Restrictions.not(Restrictions.in(property, new Object[] {2, 3}));
+        actual = instance.createCriterion(property, Comparison.OUT, new Object[] {2, 3});
+        assertEquals(exptected.toString(), actual.toString());        
     }
     
     @Test

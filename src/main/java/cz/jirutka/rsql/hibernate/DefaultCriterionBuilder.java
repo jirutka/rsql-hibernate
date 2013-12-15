@@ -51,11 +51,21 @@ public class DefaultCriterionBuilder extends AbstractCriterionBuilder {
         if (!isPropertyName(property, builder.getClassMetadata(entityClass))) {
             throw new UnknownSelectorException(property);
         }
-        
+ 
+        Criterion c = null;
         Class<?> type = findPropertyType(property, builder.getClassMetadata(entityClass));
-        Object castedArgument = builder.getArgumentParser().parse(argument, type);
-        
-        return createCriterion(alias + property, operator, castedArgument);
+        if (!(operator == Comparison.IN || operator == Comparison.OUT)){
+           Object castedArgument = builder.getArgumentParser().parse(argument, type);
+           c = createCriterion(alias + property, operator, castedArgument);
+        } else {
+        	String args[] = argument.split(",");
+        	Object castedArguments[] = new Object[args.length];
+        	for (int i=0; i<args.length; i++){
+        		castedArguments[i] = builder.getArgumentParser().parse(args[i], type); 
+        	}
+            c = createCriterion(alias + property, operator, castedArguments);        	
+        }
+        return c;
     }
     
 }
