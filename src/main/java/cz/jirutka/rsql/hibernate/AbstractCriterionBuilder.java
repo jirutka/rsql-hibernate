@@ -306,9 +306,10 @@ public abstract class AbstractCriterionBuilder {
         for (String name : names) {
             if (name.equals(property)) return true;
         }
+    	if(property.matches(classMetadata.getIdentifierPropertyName()))return true;
         return false;
     }
-    
+
     /**
      * Find the java type class of given named property in entity's metadata.
      * 
