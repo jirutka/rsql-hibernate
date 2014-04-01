@@ -23,6 +23,8 @@
  */
 package cz.jirutka.rsql.hibernate;
 
+import cz.jirutka.rsql.hibernate.builder.AbstractCriterionBuilder;
+import cz.jirutka.rsql.hibernate.exception.RSQLException;
 import cz.jirutka.rsql.parser.ParseException;
 import cz.jirutka.rsql.parser.model.ComparisonExpression;
 import java.util.List;
@@ -69,10 +71,10 @@ public interface RSQL2CriteriaConverter {
      * @param query RSQL query expression.
      * @param entityClass Entity class which given query is related to.
      * @return Criteria query generated from given RSQL expression.
-     * @throws RSQLException If some problem occured when parsing or building
+     * @throws cz.jirutka.rsql.hibernate.exception.RSQLException If some problem occured when parsing or building
      *         Criteria. This is a wrapper exception for {@link ParseException},
-     *         {@link ArgumentFormatException}, {@link JoinsLimitException},
-     *         {@link UnknownSelectorException}.
+     *         {@link cz.jirutka.rsql.hibernate.exception.ArgumentFormatException}, {@link cz.jirutka.rsql.hibernate.exception.AssociationsLimitException},
+     *         {@link cz.jirutka.rsql.hibernate.exception.UnknownSelectorException}.
      */
     DetachedCriteria createCriteria(String query, Class<?> entityClass) throws RSQLException;
     
@@ -97,8 +99,8 @@ public interface RSQL2CriteriaConverter {
      * @return Criteria query generated from given RSQL expression.
      * @throws RSQLException If some problem occured when parsing or building
      *         Criteria. This is a wrapper exception for {@link ParseException},
-     *         {@link ArgumentFormatException}, {@link JoinsLimitException},
-     *         {@link UnknownSelectorException}.
+     *         {@link cz.jirutka.rsql.hibernate.exception.ArgumentFormatException}, {@link cz.jirutka.rsql.hibernate.exception.AssociationsLimitException},
+     *         {@link cz.jirutka.rsql.hibernate.exception.UnknownSelectorException}.
      */
     DetachedCriteria createCriteria(String query, String orderBy, boolean ascending, Class<?> entityClass) 
             throws RSQLException;
@@ -112,8 +114,8 @@ public interface RSQL2CriteriaConverter {
      * @param targetCriteria Criteria which will be extended.
      * @throws RSQLException If some problem occured when parsing or building
      *         Criteria. This is a wrapper exception for {@link ParseException},
-     *         {@link ArgumentFormatException}, {@link JoinsLimitException},
-     *         {@link UnknownSelectorException}.
+     *         {@link cz.jirutka.rsql.hibernate.exception.ArgumentFormatException}, {@link cz.jirutka.rsql.hibernate.exception.AssociationsLimitException},
+     *         {@link cz.jirutka.rsql.hibernate.exception.UnknownSelectorException}.
      */
     void extendCriteria(String query, Class<?> entityClass, Criteria targetCriteria) 
             throws RSQLException;
@@ -141,7 +143,7 @@ public interface RSQL2CriteriaConverter {
     /**
      * Set the maximum number of associations that can be aliased, e.g. how many 
      * JOINs can be generated. When this limit is exceeded, 
-     * a {@link AssociationsLimitException} is thrown.
+     * a {@link cz.jirutka.rsql.hibernate.exception.AssociationsLimitException} is thrown.
      * 
      * @see RSQL2CriteriaConverter#setAssociationsLimit(int)
      * @return Upper limit of associations that can be handled.
@@ -151,13 +153,13 @@ public interface RSQL2CriteriaConverter {
     /**
      * Set the maximum number of associations that can be aliased, e.g. how many 
      * JOINs can be generated. When this limit is exceeded, 
-     * a {@link AssociationsLimitException} is thrown.
+     * a {@link cz.jirutka.rsql.hibernate.exception.AssociationsLimitException} is thrown.
      * 
      * <p>JOINs are quite expensive operations so you should limit number of 
      * JOINs that can be generated per one query to prevent users writing bad 
      * queries.</p>
      * 
-     * @param joinsLimit Upper limit of associations that can be handled. 
+     * @param limit Upper limit of associations that can be handled.
      *        Must be greater or equal 0.
      */
     public void setAssociationsLimit(int limit);
@@ -189,7 +191,7 @@ public interface RSQL2CriteriaConverter {
     /**
      * Set Mapper that is used to translate selectors to property names.
      * 
-     * @param mapping A <tt>Mapper</tt> instance, must not be <tt>null</tt>.
+     * @param mapper A <tt>Mapper</tt> instance, must not be <tt>null</tt>.
      */
     void setMapper(Mapper mapper);
     

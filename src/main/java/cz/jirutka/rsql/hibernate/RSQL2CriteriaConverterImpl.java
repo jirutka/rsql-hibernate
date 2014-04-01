@@ -23,6 +23,12 @@
  */
 package cz.jirutka.rsql.hibernate;
 
+import cz.jirutka.rsql.hibernate.builder.AbstractCriterionBuilder;
+import cz.jirutka.rsql.hibernate.builder.CriteriaBuilder;
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
+import cz.jirutka.rsql.hibernate.exception.AssociationsLimitException;
+import cz.jirutka.rsql.hibernate.exception.RSQLException;
+import cz.jirutka.rsql.hibernate.exception.UnknownSelectorException;
 import cz.jirutka.rsql.parser.ParseException;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.TokenMgrError;
@@ -51,7 +57,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Reference implementation of the {@link RSQL2CriteriaConverter}.
  * 
- * @see RSQLHibernateFactory
+ * @see RSQL2HibernateFactory
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public class RSQL2CriteriaConverterImpl implements RSQL2CriteriaConverter {
@@ -314,7 +320,7 @@ public class RSQL2CriteriaConverterImpl implements RSQL2CriteriaConverter {
          * It translates selector to property name or path via {@linkplain Mapper}
          * and then calls the <tt>delegateToBuilder()</tt> method.
          * 
-         * {@link ArgumentFormatException} and {@link UnknownSelectorException}
+         * {@link cz.jirutka.rsql.hibernate.exception.ArgumentFormatException} and {@link cz.jirutka.rsql.hibernate.exception.UnknownSelectorException}
          * are wrapped to {@link RSQLException}.
          * 
          * @param comparison Comparison expression (constraint).

@@ -21,21 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.exception;
 
 /**
- * Indicate that number of JOINs limit was exceeded.
- *
+ * Indicate that cannot be found appropriate property for a selector.
+ * 
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
-public class AssociationsLimitException extends RuntimeException {
-   
+public class UnknownSelectorException extends Exception {
+    
+    private final String selector;
+
+
     /**
-     * Construct a <tt>AssociationsLimitException</tt> with specified joins limit.
+     * Construct an <tt>UnknownSelectorException</tt> with specified selector.
      * 
-     * @param joinsLimit 
+     * @param selector 
      */
-    public AssociationsLimitException(int joinsLimit) {
-        super("Joins limit (" + joinsLimit + ") exceeded");
+    public UnknownSelectorException(String selector) {
+        super("Cannot find property for selector: " + selector);
+        this.selector = selector;        
     }
+
+    
+    public String getSelector() {
+        return selector;
+    }
+    
 }

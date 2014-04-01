@@ -21,17 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.builder;
 
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
+import cz.jirutka.rsql.hibernate.exception.UnknownSelectorException;
+import cz.jirutka.rsql.hibernate.util.PropertyPathUtil;
 import cz.jirutka.rsql.parser.model.Comparison;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.metadata.ClassMetadata;
 
 /**
  * Default implementation of Criterion Builder that simply creates 
  * <tt>Criterion</tt> for a basic property (not association). This should be the 
  * last builder in stack because its <tt>accept()</tt> method always returns 
  * <tt>true</tt>. Before creating a Criterion, property name is checked if it's 
- * valid and {@link UnknownSelectorException} is thrown if not.
+ * valid and {@link cz.jirutka.rsql.hibernate.exception.UnknownSelectorException} is thrown if not.
  * 
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
@@ -47,12 +51,17 @@ public class DefaultCriterionBuilder extends AbstractCriterionBuilder {
     public Criterion createCriterion(String property, Comparison operator, 
             String argument, Class<?> entityClass, String alias, CriteriaBuilder builder) 
             throws ArgumentFormatException, UnknownSelectorException {
-        
-        if (!isPropertyName(property, builder.getClassMetadata(entityClass))) {
-            throw new UnknownSelectorException(property);
+        ClassMetadata metadata = builder.getClassMetadata(entityClass);
+        Class<?> type;
+        if(metadata != null) {
+            if (!isPropertyName(property, metadata)) {
+                throw new UnknownSelectorException(property);
+            }
+
+            type = findPropertyType(property, builder.getClassMetadata(entityClass));
+        } else {
+            type = PropertyPathUtil.getPropertyClass(entityClass, property);
         }
-        
-        Class<?> type = findPropertyType(property, builder.getClassMetadata(entityClass));
         Object castedArgument = builder.getArgumentParser().parse(argument, type);
         
         return createCriterion(alias + property, operator, castedArgument);

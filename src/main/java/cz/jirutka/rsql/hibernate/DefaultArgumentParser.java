@@ -29,6 +29,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +85,9 @@ public class DefaultArgumentParser implements ArgumentParser {
         try {
             LOG.trace("Trying to get and invoke valueOf(String s) method on {}", type);
             Method method = type.getMethod("valueOf", String.class);
-            return (T) method.invoke(type, argument);
+            if(method != null) {
+                return (T) method.invoke(type, argument);
+            }
             
         } catch (NoSuchMethodException ex) {
             LOG.warn("{} does not have method valueOf(String s)", type);

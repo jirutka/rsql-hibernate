@@ -21,8 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.builder;
 
+import cz.jirutka.rsql.hibernate.*;
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
+import cz.jirutka.rsql.hibernate.exception.AssociationsLimitException;
+import cz.jirutka.rsql.hibernate.exception.UnknownSelectorException;
 import cz.jirutka.rsql.parser.model.Comparison;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
@@ -30,7 +34,7 @@ import org.hibernate.metadata.ClassMetadata;
 
 /**
  * Interface of stateful builder class related to {@link RSQLCriteriaBuilder} 
- * that is used by {@linkplain AbstractCriterionBuilder Criterion Builders}.
+ * that is used by {@linkplain cz.jirutka.rsql.hibernate.builder.AbstractCriterionBuilder Criterion Builders}.
  *
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
@@ -44,7 +48,7 @@ public interface CriteriaBuilder {
      * 
      * @param associationPath A dot-separated path of the association property.
      * @return association alias
-     * @throws AssociationsLimitException If allowed number of associations 
+     * @throws cz.jirutka.rsql.hibernate.exception.AssociationsLimitException If allowed number of associations
      *         was exceeded.
      */
     String createAssociationAlias(String associationPath) throws AssociationsLimitException;
@@ -76,10 +80,10 @@ public interface CriteriaBuilder {
      * @param entityClass Class of entity that holds given property.
      * @param alias Alias (incl. dot) that will be used to prefix propery name.
      * @return Criterion generated from given comparison expression.
-     * @throws ArgumentFormatException If argument is not in suitable format
+     * @throws cz.jirutka.rsql.hibernate.exception.ArgumentFormatException If argument is not in suitable format
      *         required by entity's property, i.e. is not parseable to the 
      *         specified type.
-     * @throws UnknownSelectorException If such property does not exist.
+     * @throws cz.jirutka.rsql.hibernate.exception.UnknownSelectorException If such property does not exist.
      * @throws IllegalArgumentException If cannot find Criteria Builder to
      *         handle this epxression.
      */

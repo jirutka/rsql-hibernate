@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.builder;
 
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
+import cz.jirutka.rsql.hibernate.exception.UnknownSelectorException;
 import cz.jirutka.rsql.parser.model.Comparison;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Criterion;
@@ -46,7 +48,9 @@ public class IdentifierCriterionBuilder extends AbstractCriterionBuilder {
     @Override
     public boolean accept(String property, Class<?> entityClass, CriteriaBuilder builder) {
         ClassMetadata metadata = builder.getClassMetadata(entityClass);
-        
+        if(metadata == null) {
+            return false;
+        }
         return isPropertyName(property, metadata) && isAssociationType(property, metadata);
     }
 

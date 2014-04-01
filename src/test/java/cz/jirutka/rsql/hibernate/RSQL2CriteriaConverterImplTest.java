@@ -23,6 +23,12 @@
  */
 package cz.jirutka.rsql.hibernate;
 
+import cz.jirutka.rsql.hibernate.builder.AbstractCriterionBuilder;
+import cz.jirutka.rsql.hibernate.builder.CriteriaBuilder;
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
+import cz.jirutka.rsql.hibernate.exception.AssociationsLimitException;
+import cz.jirutka.rsql.hibernate.exception.RSQLException;
+import cz.jirutka.rsql.hibernate.exception.UnknownSelectorException;
 import org.hibernate.impl.CriteriaImpl.Subcriteria;
 import cz.jirutka.rsql.hibernate.RSQL2CriteriaConverterImpl.InnerBuilder;
 import org.hibernate.Criteria;
@@ -81,7 +87,7 @@ public class RSQL2CriteriaConverterImplTest {
         instance.pushCriterionBuilder(new MockCriterionBuilder() {
             @Override
             public Criterion createCriterion(String property, Comparison operator, String argument, 
-                    Class<?> entityClass, String alias, CriteriaBuilder parent) 
+                    Class<?> entityClass, String alias, CriteriaBuilder parent)
                     throws ArgumentFormatException, UnknownSelectorException {
                 assertEquals("foo", property);
                 assertEquals(operator, Comparison.EQUAL);

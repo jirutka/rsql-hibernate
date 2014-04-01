@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.builder;
 
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
+import cz.jirutka.rsql.hibernate.exception.UnknownSelectorException;
 import cz.jirutka.rsql.parser.model.Comparison;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Criterion;
@@ -89,9 +91,13 @@ public class NaturalIdCriterionBuilder extends IdentifierCriterionBuilder {
      */
     protected boolean hasNaturalIdentifier(String property, Class<?> entityClass, CriteriaBuilder builder) 
             throws HibernateException {
-        Class<?> type = findPropertyType(property, builder.getClassMetadata(entityClass));
+        ClassMetadata classMetadata = builder.getClassMetadata(entityClass);
+        if(classMetadata == null) {
+            return false;
+        }
+        Class<?> type = findPropertyType(property, classMetadata);
         ClassMetadata assocClassMetadata = builder.getClassMetadata(type);
-        
+
         return assocClassMetadata.hasNaturalIdentifier();
     }
 

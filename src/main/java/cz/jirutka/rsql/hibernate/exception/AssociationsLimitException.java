@@ -21,27 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.exception;
 
 /**
- * This is a wrapper exception for {@link ParseException},
- * {@link ArgumentFormatException}, {@link JoinsLimitException} and
- * {@link UnknownSelectorException}.
- * 
+ * Indicate that number of JOINs limit was exceeded.
+ *
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
-public class RSQLException extends RuntimeException {
-
+public class AssociationsLimitException extends RuntimeException {
+   
     /**
-     * Constructs a <tt>RSQLException</tt> with the specified cause and a detail 
-     * message of (cause==null ? null : cause.toString()) (which typically 
-     * contains the class and detail message of cause).
+     * Construct a <tt>AssociationsLimitException</tt> with specified joins limit.
      * 
-     * @param cause The cause (which is saved for later retrieval by the 
-     *        Throwable.getCause() method).
+     * @param joinsLimit 
      */
-    public RSQLException(Throwable cause) {
-        super(cause);
+    public AssociationsLimitException(int joinsLimit) {
+        super("Joins limit (" + joinsLimit + ") exceeded");
     }
-    
 }
