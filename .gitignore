@@ -1,1 +1,3 @@
 /target/
+/.idea
+/rsql-hibernate.iml
