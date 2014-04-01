@@ -26,6 +26,7 @@ package cz.jirutka.rsql.hibernate.builder;
 import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
 import cz.jirutka.rsql.hibernate.exception.AssociationsLimitException;
 import cz.jirutka.rsql.hibernate.exception.UnknownSelectorException;
+import cz.jirutka.rsql.hibernate.util.PropertyPathUtil;
 import cz.jirutka.rsql.parser.model.Comparison;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.metadata.ClassMetadata;
@@ -53,7 +54,7 @@ public class AssociationsCriterionBuilder extends AbstractCriterionBuilder {
     
     
     @Override
-    public boolean accept(String propertyPath, Class<?> entityClass, CriteriaBuilder builder) {       
+    public boolean accept(String propertyPath, Class<?> entityClass, CriteriaBuilder builder) {
         return splitPath(propertyPath).length > 1;
     }
 
@@ -70,17 +71,28 @@ public class AssociationsCriterionBuilder extends AbstractCriterionBuilder {
         // walk through associations
         for (int i = 0; i < path.length -1; i++) {
             ClassMetadata metadata = builder.getClassMetadata(lastClass);
-            property = builder.getMapper().translate(path[i], lastClass);
-            
-            if (!isPropertyName(property, metadata)) {
-                throw new UnknownSelectorException(path[i]);
+            if(metadata == null) {
+                // class is not a entity, maybe a embeddable
+                property = path[i];
+                lastAlias = lastAlias + property + ".";
+                lastClass = PropertyPathUtil.getPropertyClass(lastClass, path[i]);
+            } else {
+                property = builder.getMapper().translate(path[i], lastClass);
+
+                if (!isPropertyName(property, metadata)) {
+                    throw new UnknownSelectorException(path[i]);
+                }
+                lastClass = findPropertyType(property, metadata);
+                if(builder.getClassMetadata(lastClass) != null) {
+                    // that is a association
+                    lastAlias = builder.createAssociationAlias(lastAlias + property) + '.';
+                } else {
+                    // that is no association, maybe a embeddable
+                    lastAlias = lastAlias + property + ".";
+                }
             }
-            lastClass = findPropertyType(property, metadata);
-            
             LOG.trace("Nesting level {}: property '{}' of entity {}",
                     new Object[]{i, property, lastClass.getSimpleName()});
-
-            lastAlias = builder.createAssociationAlias(lastAlias + property) + '.';
         }
         
         // the last property may by an ordinal property (not an association)

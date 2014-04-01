@@ -91,9 +91,13 @@ public class NaturalIdCriterionBuilder extends IdentifierCriterionBuilder {
      */
     protected boolean hasNaturalIdentifier(String property, Class<?> entityClass, CriteriaBuilder builder) 
             throws HibernateException {
-        Class<?> type = findPropertyType(property, builder.getClassMetadata(entityClass));
+        ClassMetadata classMetadata = builder.getClassMetadata(entityClass);
+        if(classMetadata == null) {
+            return false;
+        }
+        Class<?> type = findPropertyType(property, classMetadata);
         ClassMetadata assocClassMetadata = builder.getClassMetadata(type);
-        
+
         return assocClassMetadata.hasNaturalIdentifier();
     }
 

@@ -245,8 +245,8 @@ public abstract class AbstractCriterionBuilder {
      * Check if given argument contains wildcard.
      * 
      * @param argument
-     * @return Return <tt>true</tt> if argument contains wildcard 
-     *         {@link #LIKE_WILDCHAR}.
+     * @return Return <tt>true</tt> if argument contains wildcard
+     *         {@value #LIKE_WILDCARD}.
      */
     protected boolean containWildcard(Object argument) {
         if (!(argument instanceof String)) {
@@ -267,6 +267,9 @@ public abstract class AbstractCriterionBuilder {
      *         otherwise <tt>false</tt>.
      */
     protected boolean isPropertyName(String property, ClassMetadata classMetadata) {
+        if(classMetadata == null) {
+            return false;
+        }
         String[] names = classMetadata.getPropertyNames();
         for (String name : names) {
             if (name.equals(property)) return true;
@@ -284,6 +287,9 @@ public abstract class AbstractCriterionBuilder {
      */
     protected Class<?> findPropertyType(String property, ClassMetadata classMetadata) 
             throws HibernateException {
+        if(classMetadata == null) {
+            return null;
+        }
         return classMetadata.getPropertyType(property).getReturnedClass();
     }
 

@@ -25,8 +25,10 @@ package cz.jirutka.rsql.hibernate.builder;
 
 import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
 import cz.jirutka.rsql.hibernate.exception.UnknownSelectorException;
+import cz.jirutka.rsql.hibernate.util.PropertyPathUtil;
 import cz.jirutka.rsql.parser.model.Comparison;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.metadata.ClassMetadata;
 
 /**
  * Default implementation of Criterion Builder that simply creates 
@@ -49,12 +51,17 @@ public class DefaultCriterionBuilder extends AbstractCriterionBuilder {
     public Criterion createCriterion(String property, Comparison operator, 
             String argument, Class<?> entityClass, String alias, CriteriaBuilder builder) 
             throws ArgumentFormatException, UnknownSelectorException {
-        
-        if (!isPropertyName(property, builder.getClassMetadata(entityClass))) {
-            throw new UnknownSelectorException(property);
+        ClassMetadata metadata = builder.getClassMetadata(entityClass);
+        Class<?> type;
+        if(metadata != null) {
+            if (!isPropertyName(property, metadata)) {
+                throw new UnknownSelectorException(property);
+            }
+
+            type = findPropertyType(property, builder.getClassMetadata(entityClass));
+        } else {
+            type = PropertyPathUtil.getPropertyClass(entityClass, property);
         }
-        
-        Class<?> type = findPropertyType(property, builder.getClassMetadata(entityClass));
         Object castedArgument = builder.getArgumentParser().parse(argument, type);
         
         return createCriterion(alias + property, operator, castedArgument);

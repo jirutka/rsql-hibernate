@@ -48,7 +48,9 @@ public class IdentifierCriterionBuilder extends AbstractCriterionBuilder {
     @Override
     public boolean accept(String property, Class<?> entityClass, CriteriaBuilder builder) {
         ClassMetadata metadata = builder.getClassMetadata(entityClass);
-        
+        if(metadata == null) {
+            return false;
+        }
         return isPropertyName(property, metadata) && isAssociationType(property, metadata);
     }
 
