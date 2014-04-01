@@ -21,10 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.builder;
 
+import cz.jirutka.rsql.hibernate.ArgumentParser;
+import cz.jirutka.rsql.hibernate.DefaultArgumentParser;
+import cz.jirutka.rsql.hibernate.Mapper;
+import cz.jirutka.rsql.hibernate.SessionFactoryInitializer;
+import cz.jirutka.rsql.hibernate.builder.AbstractCriterionBuilder;
+import cz.jirutka.rsql.hibernate.builder.CriteriaBuilder;
+import cz.jirutka.rsql.hibernate.builder.DefaultCriterionBuilder;
 import cz.jirutka.rsql.hibernate.entity.Department;
 import cz.jirutka.rsql.hibernate.entity.Course;
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
+import cz.jirutka.rsql.hibernate.exception.AssociationsLimitException;
+import cz.jirutka.rsql.hibernate.exception.UnknownSelectorException;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;

@@ -74,7 +74,7 @@ public class RSQLCriteriaDecorator extends AbstractCriteriaDecorator<RSQLCriteri
      * 
      * @param query RSQL query expression
      * @return this (for method chaining)
-     * @throws RSQLException If some problem occured when converting RSQL query
+     * @throws cz.jirutka.rsql.hibernate.exception.RSQLException If some problem occured when converting RSQL query
      *         into criteria query.
      */
     public RSQLCriteriaDecorator mergeRSQLQuery(String query) {

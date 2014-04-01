@@ -106,7 +106,7 @@ public class SimpleMapper implements Mapper {
     /**
      * Set the mapping of selectors to property names per entity class.
      * 
-     * @param Mapping {entity class -> {selector -> property}}
+     * @param mapping {entity class -> {selector -> property}}
      */
     public void setMapping(Map<Class<?>, Map<String, String>> mapping) {
         this.mapping = mapping;

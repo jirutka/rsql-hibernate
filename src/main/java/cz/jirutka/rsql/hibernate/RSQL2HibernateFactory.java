@@ -25,6 +25,8 @@ package cz.jirutka.rsql.hibernate;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cz.jirutka.rsql.hibernate.builder.*;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.DetachedCriteria;

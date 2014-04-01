@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.builder;
 
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
+import cz.jirutka.rsql.hibernate.exception.UnknownSelectorException;
 import cz.jirutka.rsql.parser.model.Comparison;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Criterion;
@@ -70,10 +72,10 @@ public abstract class AbstractCriterionBuilder {
      *        property name!
      * @param parent Reference to the parent <tt>CriteriaBuilder</tt>.
      * @return Criterion
-     * @throws ArgumentFormatException If given argument is not in suitable 
+     * @throws cz.jirutka.rsql.hibernate.exception.ArgumentFormatException If given argument is not in suitable
      *         format required by entity's property, i.e. cannot be cast to 
      *         property's type.
-     * @throws UnknownSelectorException If such property does not exist.
+     * @throws cz.jirutka.rsql.hibernate.exception.UnknownSelectorException If such property does not exist.
      */
     public abstract Criterion createCriterion(String property, Comparison operator, String argument, 
             Class<?> entityClass, String alias, CriteriaBuilder parent) 
@@ -252,12 +254,9 @@ public abstract class AbstractCriterionBuilder {
         }
         
         String casted = (String) argument;
-        if (casted.contains(LIKE_WILDCARD.toString())) {
-            return true;
-        }
-        
-        return false;
-    }   
+        return casted.contains(LIKE_WILDCARD.toString());
+
+    }
     
     /**
      * Check if entity of specified class metadata contains given property.

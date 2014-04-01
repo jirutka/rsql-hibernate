@@ -23,6 +23,8 @@
  */
 package cz.jirutka.rsql.hibernate;
 
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
+
 /**
  * Interface for Argument Parser that is used for parsing given string argument
  * from RSQL query according to type of the target property.
@@ -38,7 +40,7 @@ public interface ArgumentParser {
      * @param argument string argument
      * @param type class type
      * @return The instance of the given argument in the specified type.
-     * @throws ArgumentFormatException If the given argument is not parseable 
+     * @throws cz.jirutka.rsql.hibernate.exception.ArgumentFormatException If the given argument is not parseable
      *         to the specified type.
      * @throws IllegalArgumentException If the specified type is not supported.
      */

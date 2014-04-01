@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.builder;
 
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
+import cz.jirutka.rsql.hibernate.exception.UnknownSelectorException;
 import cz.jirutka.rsql.parser.model.Comparison;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Criterion;

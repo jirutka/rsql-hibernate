@@ -21,9 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.builder;
 
+import cz.jirutka.rsql.hibernate.SessionFactoryInitializer;
 import cz.jirutka.rsql.hibernate.entity.Course;
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import cz.jirutka.rsql.parser.model.Comparison;

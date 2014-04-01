@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.exception;
 
 /**
  * Indicate that argument is not in suitable format required by entity's 

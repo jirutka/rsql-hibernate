@@ -21,31 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.exception;
 
 /**
- * Indicate that cannot be found appropriate property for a selector.
+ * This is a wrapper exception for {@link ParseException},
+ * {@link cz.jirutka.rsql.hibernate.exception.ArgumentFormatException},
+ * {@link cz.jirutka.rsql.hibernate.exception.AssociationsLimitException} and
+ * {@link cz.jirutka.rsql.hibernate.exception.UnknownSelectorException}.
  * 
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
-public class UnknownSelectorException extends Exception {
-    
-    private final String selector;
-
+public class RSQLException extends RuntimeException {
 
     /**
-     * Construct an <tt>UnknownSelectorException</tt> with specified selector.
+     * Constructs a <tt>RSQLException</tt> with the specified cause and a detail 
+     * message of (cause==null ? null : cause.toString()) (which typically 
+     * contains the class and detail message of cause).
      * 
-     * @param selector 
+     * @param cause The cause (which is saved for later retrieval by the 
+     *        Throwable.getCause() method).
      */
-    public UnknownSelectorException(String selector) {
-        super("Cannot find property for selector: " + selector);
-        this.selector = selector;        
-    }
-
-    
-    public String getSelector() {
-        return selector;
+    public RSQLException(Throwable cause) {
+        super(cause);
     }
     
 }

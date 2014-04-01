@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package cz.jirutka.rsql.hibernate;
+package cz.jirutka.rsql.hibernate.builder;
 
+import cz.jirutka.rsql.hibernate.exception.ArgumentFormatException;
+import cz.jirutka.rsql.hibernate.exception.UnknownSelectorException;
 import cz.jirutka.rsql.parser.model.Comparison;
 import org.hibernate.criterion.Criterion;
 
@@ -31,7 +33,7 @@ import org.hibernate.criterion.Criterion;
  * <tt>Criterion</tt> for a basic property (not association). This should be the 
  * last builder in stack because its <tt>accept()</tt> method always returns 
  * <tt>true</tt>. Before creating a Criterion, property name is checked if it's 
- * valid and {@link UnknownSelectorException} is thrown if not.
+ * valid and {@link cz.jirutka.rsql.hibernate.exception.UnknownSelectorException} is thrown if not.
  * 
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
