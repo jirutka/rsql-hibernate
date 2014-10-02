@@ -46,7 +46,7 @@ public class NaturalIdCriterionBuilderTest extends AbstractCriterionBuilderTest 
         parent = new MockInnerBuilder(Course.class);
         sessionFactory = SessionFactoryInitializer.getSessionFactory();
     }
-    
+
 
     @Test
     public void testAccept() {
@@ -63,7 +63,7 @@ public class NaturalIdCriterionBuilderTest extends AbstractCriterionBuilderTest 
     public void testCreateCriterion() throws Exception {
         Criterion expResult;
         Criterion result;
-        
+
         CriteriaBuilder parent1 = new MockInnerBuilder(Course.class) {
             @Override
             public String createAssociationAlias(String property) throws AssociationsLimitException {
@@ -80,7 +80,7 @@ public class NaturalIdCriterionBuilderTest extends AbstractCriterionBuilderTest 
             fail("Should raise an ArgumentFormatException");
         } catch (ArgumentFormatException ex) { /*OK*/ }
     }
-    
+
     @Test
     public void testHasNaturalIdentifier() throws HibernateException {
         NaturalIdCriterionBuilder instance = (NaturalIdCriterionBuilder) this.instance;

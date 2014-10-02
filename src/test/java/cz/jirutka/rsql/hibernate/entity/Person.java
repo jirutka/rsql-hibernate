@@ -32,11 +32,11 @@ import javax.persistence.Entity;
  */
 @Entity
 public class Person extends AbstractTestEntity {
-    
+
     @Column
     private String surname;
 
-    
+
     public String getSurname() {
         return surname;
     }

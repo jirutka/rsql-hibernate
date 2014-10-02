@@ -33,14 +33,14 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class AbstractTestEntity {
-    
+
     @Id
     private Long id;
-    
+
     @Column
     private String name;
 
-    
+
     public Long getId() {
         return id;
     }
@@ -56,5 +56,5 @@ public abstract class AbstractTestEntity {
     public void setName(String name) {
         this.name = name;
     }
-    
+
 }

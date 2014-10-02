@@ -27,21 +27,21 @@ package cz.jirutka.rsql.hibernate;
  * This is a wrapper exception for {@link ParseException},
  * {@link ArgumentFormatException}, {@link JoinsLimitException} and
  * {@link UnknownSelectorException}.
- * 
+ *
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public class RSQLException extends RuntimeException {
 
     /**
-     * Constructs a <tt>RSQLException</tt> with the specified cause and a detail 
-     * message of (cause==null ? null : cause.toString()) (which typically 
+     * Constructs a <tt>RSQLException</tt> with the specified cause and a detail
+     * message of (cause==null ? null : cause.toString()) (which typically
      * contains the class and detail message of cause).
-     * 
-     * @param cause The cause (which is saved for later retrieval by the 
+     *
+     * @param cause The cause (which is saved for later retrieval by the
      *        Throwable.getCause() method).
      */
     public RSQLException(Throwable cause) {
         super(cause);
     }
-    
+
 }

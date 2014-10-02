@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public class AssociationsCriterionBuilderTest extends AbstractCriterionBuilderTest {
-    
+
     @Before
     public void setUp() throws Exception {
         instance = new AssociationsCriterionBuilder();
@@ -46,7 +46,7 @@ public class AssociationsCriterionBuilderTest extends AbstractCriterionBuilderTe
         parent = new MockInnerBuilder(Course.class);
         sessionFactory = SessionFactoryInitializer.getSessionFactory();
     }
-    
+
 
     @Test
     public void testAccept() {
@@ -60,7 +60,7 @@ public class AssociationsCriterionBuilderTest extends AbstractCriterionBuilderTe
         Criterion expResult;
         Criterion result;
 
-        
+
         CriteriaBuilder parent1 = new MockInnerBuilder(Course.class) {
             @Override
             public String createAssociationAlias(String property) throws AssociationsLimitException {
@@ -68,7 +68,7 @@ public class AssociationsCriterionBuilderTest extends AbstractCriterionBuilderTe
                 return "alias1";
             }
             @Override
-            public Criterion delegateToBuilder(String property, Comparison operator, String argument, Class<?> entityClass, String alias) 
+            public Criterion delegateToBuilder(String property, Comparison operator, String argument, Class<?> entityClass, String alias)
                     throws ArgumentFormatException, UnknownSelectorException, IllegalStateException {
                 assertEquals("name", property);
                 assertEquals(Comparison.EQUAL, operator);
@@ -77,14 +77,14 @@ public class AssociationsCriterionBuilderTest extends AbstractCriterionBuilderTe
                 assertEquals(alias, "alias1.");
                 return Restrictions.eq("alias1.name", "KSI");
             }
-            
+
         };
         expResult = Restrictions.eq("alias1.name", "KSI");
         result = instance.createCriterion("department.name", Comparison.EQUAL, "KSI", entityClass, "this.", parent1);
         //equals() on Criterion doesn't work here, hence toString()
         assertEquals(expResult.toString(), result.toString());
-        
-        
+
+
         CriteriaBuilder parent2 = new MockInnerBuilder(Course.class) {
             private int associations = 0;
             @Override
@@ -102,7 +102,7 @@ public class AssociationsCriterionBuilderTest extends AbstractCriterionBuilderTe
                 return null;
             }
             @Override
-            public Criterion delegateToBuilder(String property, Comparison operator, String argument, Class<?> entityClass, String alias) 
+            public Criterion delegateToBuilder(String property, Comparison operator, String argument, Class<?> entityClass, String alias)
                     throws ArgumentFormatException, UnknownSelectorException, IllegalStateException {
                 assertEquals("surname", property);
                 assertEquals("Torvalds", argument);
@@ -116,7 +116,7 @@ public class AssociationsCriterionBuilderTest extends AbstractCriterionBuilderTe
         //equals() on Criterion doesn't work here, hence toString()
         assertEquals(expResult.toString(), result.toString());
 
-        
+
         try {
             result = instance.createCriterion("department.code", Comparison.EQUAL, "non-numeric", entityClass, "this.", parent);
             fail("Should raise an ArgumentFormatException");

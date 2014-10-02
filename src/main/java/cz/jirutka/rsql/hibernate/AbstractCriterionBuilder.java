@@ -35,24 +35,24 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Superclass of all Criterion Builders.
- * 
+ *
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public abstract class AbstractCriterionBuilder {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(AbstractCriterionBuilder.class);
 
     public static final Character LIKE_WILDCARD = '*';
     public static final String NULL_ARGUMENT = "NULL";
-    
-    
-    
+
+
+
     ///////////////  ABSTRACT METHODS  ///////////////
-    
+
     /**
-     * This method is called by Criteria Builder to determine if this builder 
+     * This method is called by Criteria Builder to determine if this builder
      * can handle given comparison (constraint).
-     * 
+     *
      * @param property property name or path
      * @param entityClass Class of entity that holds given property.
      * @param parent Reference to the parent <tt>CriteriaBuilder</tt>.
@@ -60,47 +60,47 @@ public abstract class AbstractCriterionBuilder {
      *         class, otherwise <tt>false</tt>
      */
     public abstract boolean accept(String property, Class<?> entityClass, CriteriaBuilder parent);
-    
+
     /**
      * Create <tt>Criterion</tt> for given comparison (constraint).
-     * 
+     *
      * @param property property name or path
      * @param operator comparison operator
      * @param argument argument
      * @param entityClass Class of entity that holds given property.
-     * @param alias Association alias (incl. dot) which must be used to prefix 
+     * @param alias Association alias (incl. dot) which must be used to prefix
      *        property name!
      * @param parent Reference to the parent <tt>CriteriaBuilder</tt>.
      * @return Criterion
-     * @throws ArgumentFormatException If given argument is not in suitable 
-     *         format required by entity's property, i.e. cannot be cast to 
+     * @throws ArgumentFormatException If given argument is not in suitable
+     *         format required by entity's property, i.e. cannot be cast to
      *         property's type.
      * @throws UnknownSelectorException If such property does not exist.
      */
-    public abstract Criterion createCriterion(String property, Comparison operator, String argument, 
-            Class<?> entityClass, String alias, CriteriaBuilder parent) 
+    public abstract Criterion createCriterion(String property, Comparison operator, String argument,
+            Class<?> entityClass, String alias, CriteriaBuilder parent)
             throws ArgumentFormatException, UnknownSelectorException;
-    
-    
-    
-    
+
+
+
+
     ///////////////  TEMPLATE METHODS  ///////////////
-    
+
     /**
-     * Delegate creating of a Criterion to an appropriate method according to 
-     * operator. 
-     * 
+     * Delegate creating of a Criterion to an appropriate method according to
+     * operator.
+     *
      * Property name MUST be prefixed with an association alias!
-     * 
+     *
      * @param propertyPath property name prefixed with an association alias
      * @param operator comparison operator
      * @param argument argument
      * @return Criterion
      */
     protected Criterion createCriterion(String propertyPath, Comparison operator, Object argument) {
-        LOG.trace("Creating criterion: {} {} {}", 
+        LOG.trace("Creating criterion: {} {} {}",
                 new Object[]{propertyPath, operator, argument});
-        
+
         switch (operator) {
             case EQUAL : {
                 if (containWildcard(argument)) {
@@ -127,10 +127,10 @@ public abstract class AbstractCriterionBuilder {
         }
         throw new IllegalArgumentException("Unknown operator: " + operator);
     }
-    
+
     /**
      * Apply an "equal" constraint to the named property.
-     * 
+     *
      * @param propertyPath property name prefixed with an association alias
      * @param argument value
      * @return Criterion
@@ -138,11 +138,11 @@ public abstract class AbstractCriterionBuilder {
     protected Criterion createEqual(String propertyPath, Object argument) {
         return Restrictions.eq(propertyPath, argument);
     }
-    
+
     /**
      * Apply a case-insensitive "like" constraint to the named property. Value
      * should contains wildcards "*" (% in SQL) and "_".
-     * 
+     *
      * @param propertyPath property name prefixed with an association alias
      * @param argument value
      * @return Criterion
@@ -150,7 +150,7 @@ public abstract class AbstractCriterionBuilder {
     protected Criterion createLike(String propertyPath, Object argument) {
         String like = (String)argument;
         like = like.replace(LIKE_WILDCARD, '%');
-        
+
         return Restrictions.ilike(propertyPath, like);
     }
 
@@ -163,10 +163,10 @@ public abstract class AbstractCriterionBuilder {
     protected Criterion createIsNull(String propertyPath) {
         return Restrictions.isNull(propertyPath);
     }
-    
+
     /**
      * Apply a "not equal" constraint to the named property.
-     * 
+     *
      * @param propertyPath property name prefixed with an association alias
      * @param argument value
      * @return Criterion
@@ -174,16 +174,16 @@ public abstract class AbstractCriterionBuilder {
     protected Criterion createNotEqual(String propertyPath, Object argument) {
         return Restrictions.ne(propertyPath, argument);
     }
-    
+
     /**
-     * Apply a negative case-insensitive "like" constraint to the named property. 
+     * Apply a negative case-insensitive "like" constraint to the named property.
      * Value should contains wildcards "*" (% in SQL) and "_".
-     * 
+     *
      * @param propertyPath property name prefixed with an association alias
      * @param argument Value with wildcards.
      * @return Criterion
      */
-    protected Criterion createNotLike(String propertyPath, Object argument) {        
+    protected Criterion createNotLike(String propertyPath, Object argument) {
         return Restrictions.not(createLike(propertyPath, argument));
     }
 
@@ -196,10 +196,10 @@ public abstract class AbstractCriterionBuilder {
     protected Criterion createIsNotNull(String propertyPath) {
         return Restrictions.isNotNull(propertyPath);
     }
-    
+
     /**
      * Apply a "greater than" constraint to the named property.
-     * 
+     *
      * @param propertyPath property name prefixed with an association alias
      * @param argument value
      * @return Criterion
@@ -207,10 +207,10 @@ public abstract class AbstractCriterionBuilder {
     protected Criterion createGreaterThan(String propertyPath, Object argument) {
         return Restrictions.gt(propertyPath, argument);
     }
-    
+
     /**
      * Apply a "greater than or equal" constraint to the named property.
-     * 
+     *
      * @param propertyPath property name prefixed with an association alias
      * @param argument value
      * @return Criterion
@@ -218,10 +218,10 @@ public abstract class AbstractCriterionBuilder {
     protected Criterion createGreaterEqual(String propertyPath, Object argument) {
         return Restrictions.ge(propertyPath, argument);
     }
-    
+
     /**
      * Apply a "less than" constraint to the named property.
-     * 
+     *
      * @param propertyPath property name prefixed with an association alias
      * @param argument value
      * @return Criterion
@@ -229,10 +229,10 @@ public abstract class AbstractCriterionBuilder {
     protected Criterion createLessThan(String propertyPath, Object argument) {
         return Restrictions.lt(propertyPath, argument);
     }
-    
+
     /**
      * Apply a "less than or equal" constraint to the named property.
-     * 
+     *
      * @param propertyPath property name prefixed with an association alias
      * @param argument value
      * @return Criterion
@@ -240,30 +240,30 @@ public abstract class AbstractCriterionBuilder {
     protected Criterion createLessEqual(String propertyPath, Object argument) {
         return Restrictions.le(propertyPath, argument);
     }
-    
+
     /**
      * Check if given argument contains wildcard.
-     * 
+     *
      * @param argument
-     * @return Return <tt>true</tt> if argument contains wildcard 
+     * @return Return <tt>true</tt> if argument contains wildcard
      *         {@link #LIKE_WILDCHAR}.
      */
     protected boolean containWildcard(Object argument) {
         if (!(argument instanceof String)) {
             return false;
         }
-        
+
         String casted = (String) argument;
         if (casted.contains(LIKE_WILDCARD.toString())) {
             return true;
         }
-        
+
         return false;
-    }   
-    
+    }
+
     /**
      * Check if entity of specified class metadata contains given property.
-     * 
+     *
      * @param property property name
      * @param classMetadata entity metadata
      * @return <tt>true</tt> if specified class metadata contains given property,
@@ -276,10 +276,10 @@ public abstract class AbstractCriterionBuilder {
         }
         return false;
     }
-    
+
     /**
      * Find the java type class of given named property in entity's metadata.
-     * 
+     *
      * @param property property name
      * @param classMetadata entity metadata
      * @return The java type class of given property.

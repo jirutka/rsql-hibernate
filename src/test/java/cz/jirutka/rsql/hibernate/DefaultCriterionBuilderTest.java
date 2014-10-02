@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public class DefaultCriterionBuilderTest extends AbstractCriterionBuilderTest {
-    
+
     @Before
     public void setUp() throws Exception {
         instance = new DefaultCriterionBuilder();
@@ -44,8 +44,8 @@ public class DefaultCriterionBuilderTest extends AbstractCriterionBuilderTest {
         parent = new MockInnerBuilder(Course.class);
         sessionFactory = SessionFactoryInitializer.getSessionFactory();
     }
-    
-    
+
+
     @Test
     public void testAccept() {
         assertTrue(instance.accept("whatever", entityClass, parent));
@@ -55,7 +55,7 @@ public class DefaultCriterionBuilderTest extends AbstractCriterionBuilderTest {
     public void testCreateCriterion() throws Exception {
         Criterion expResult;
         Criterion result;
-        
+
         expResult = Restrictions.eq("that.code", "MI-MDW");
         result = instance.createCriterion("code", Comparison.EQUAL, "MI-MDW", entityClass, "that.", parent);
         //equals() on Criterion doesn't work here, hence toString()
@@ -65,12 +65,12 @@ public class DefaultCriterionBuilderTest extends AbstractCriterionBuilderTest {
             result = instance.createCriterion("invalid", Comparison.EQUAL, "MI-W20", entityClass, "that.", parent);
             fail("Should raise an UnknownSelectorException");
         } catch (UnknownSelectorException ex) { /*OK*/ }
-        
+
         try {
             result = instance.createCriterion("credits", Comparison.LESS_EQUAL, "non-number", entityClass, "that.", parent);
             fail("Should raise an ArgumentFormatException");
         } catch (ArgumentFormatException ex) { /*OK*/ }
-        
+
     }
-       
+
 }

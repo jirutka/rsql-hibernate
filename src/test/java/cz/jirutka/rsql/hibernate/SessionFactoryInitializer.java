@@ -36,13 +36,13 @@ import org.hibernate.dialect.HSQLDialect;
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public class SessionFactoryInitializer {
-    
+
     private static SessionFactory instance;
-    
-    
+
+
     public static SessionFactory getSessionFactory() {
         if (instance != null) return instance;
-        
+
         Configuration configuration = new Configuration();
         configuration.setProperty(Environment.DRIVER, "org.hsqldb.jdbcDriver");
         configuration.setProperty(Environment.URL, "jdbc:hsqldb:mem:ProductDAOTest");
@@ -54,7 +54,7 @@ public class SessionFactoryInitializer {
         configuration.addAnnotatedClass(Person.class);
 
         instance = configuration.buildSessionFactory();
-        
+
         return instance;
     }
 }

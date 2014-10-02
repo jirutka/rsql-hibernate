@@ -25,27 +25,27 @@ package cz.jirutka.rsql.hibernate;
 
 /**
  * Indicate that cannot be found appropriate property for a selector.
- * 
+ *
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public class UnknownSelectorException extends Exception {
-    
+
     private final String selector;
 
 
     /**
      * Construct an <tt>UnknownSelectorException</tt> with specified selector.
-     * 
-     * @param selector 
+     *
+     * @param selector
      */
     public UnknownSelectorException(String selector) {
         super("Cannot find property for selector: " + selector);
-        this.selector = selector;        
+        this.selector = selector;
     }
 
-    
+
     public String getSelector() {
         return selector;
     }
-    
+
 }

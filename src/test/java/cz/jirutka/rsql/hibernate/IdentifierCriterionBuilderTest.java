@@ -37,8 +37,8 @@ import static org.junit.Assert.*;
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public class IdentifierCriterionBuilderTest extends AbstractCriterionBuilderTest {
-    
-    
+
+
     @Before
     public void setUp() throws Exception {
         instance = new IdentifierCriterionBuilder();
@@ -46,8 +46,8 @@ public class IdentifierCriterionBuilderTest extends AbstractCriterionBuilderTest
         parent = new MockInnerBuilder(Course.class);
         sessionFactory = SessionFactoryInitializer.getSessionFactory();
     }
-    
-    
+
+
     @Test
     public void testAccept() {
         assertTrue(instance.accept("department", entityClass, parent));
@@ -60,7 +60,7 @@ public class IdentifierCriterionBuilderTest extends AbstractCriterionBuilderTest
     public void testCreateCriterion() throws Exception {
         Criterion expResult;
         Criterion result;
-        
+
         expResult = Restrictions.eq("that.department.id", 123456L);
         result = instance.createCriterion("department", Comparison.EQUAL, "123456", entityClass, "that.", parent);
         //equals() on Criterion doesn't work here, hence toString()
@@ -71,19 +71,19 @@ public class IdentifierCriterionBuilderTest extends AbstractCriterionBuilderTest
             fail("Should raise an ArgumentFormatException");
         } catch (ArgumentFormatException ex) { /*OK*/ }
     }
-    
+
     @Test
     public void testIsAssociationType() {
         IdentifierCriterionBuilder instance = (IdentifierCriterionBuilder) this.instance;
         ClassMetadata classMetadata = sessionFactory.getClassMetadata(Course.class);
-        
+
         assertTrue(instance.isAssociationType("department", classMetadata));
         assertFalse(instance.isAssociationType("name", classMetadata));
         assertFalse(instance.isAssociationType("id", classMetadata));
         try {
             assertFalse(instance.isAssociationType("invalid", classMetadata));
         } catch (Exception ex) { /*OK*/ }
-        
+
     }
-    
+
 }

@@ -26,22 +26,22 @@ package cz.jirutka.rsql.hibernate;
 /**
  * Interface for Argument Parser that is used for parsing given string argument
  * from RSQL query according to type of the target property.
- * 
+ *
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public interface ArgumentParser {
-    
+
     /**
      * Parse given string argument as the specified class type.
-     * 
+     *
      * @param <T> class type
      * @param argument string argument
      * @param type class type
      * @return The instance of the given argument in the specified type.
-     * @throws ArgumentFormatException If the given argument is not parseable 
+     * @throws ArgumentFormatException If the given argument is not parseable
      *         to the specified type.
      * @throws IllegalArgumentException If the specified type is not supported.
      */
-    <T> T parse(String argument, Class<T> type) 
+    <T> T parse(String argument, Class<T> type)
             throws ArgumentFormatException, IllegalArgumentException;
 }

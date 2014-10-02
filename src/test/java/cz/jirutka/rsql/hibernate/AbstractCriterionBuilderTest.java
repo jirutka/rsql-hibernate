@@ -25,6 +25,7 @@ package cz.jirutka.rsql.hibernate;
 
 import cz.jirutka.rsql.hibernate.entity.Department;
 import cz.jirutka.rsql.hibernate.entity.Course;
+import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -38,79 +39,79 @@ import static org.junit.Assert.*;
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public abstract class AbstractCriterionBuilderTest {
-    
+
     protected AbstractCriterionBuilder instance;
     protected Class<?> entityClass;
     protected CriteriaBuilder parent;
     protected SessionFactory sessionFactory;
-    
-    
-    
+
+
+
     ////////////////////////// Tests //////////////////////////
-    
+
     @Test
     public void testCreateCriterion3args() {
         String property = "foo";
         Criterion exptected;
         Criterion actual;
-        
+
         exptected = Restrictions.eq(property, "bar");
         actual = instance.createCriterion(property, Comparison.EQUAL, "bar");
         assertEquals(exptected.toString(), actual.toString());
-        
+
         exptected = Restrictions.ilike(property, "bar%");
         actual = instance.createCriterion(property, Comparison.EQUAL, "bar*");
         assertEquals(exptected.toString(), actual.toString());
-        
+
         exptected = Restrictions.ne(property, "bar");
         actual = instance.createCriterion(property, Comparison.NOT_EQUAL, "bar");
         assertEquals(exptected.toString(), actual.toString());
-        
+
         exptected = Restrictions.not(Restrictions.ilike(property, "%bar"));
         actual = instance.createCriterion(property, Comparison.NOT_EQUAL, "*bar");
         assertEquals(exptected.toString(), actual.toString());
-        
+
         exptected = Restrictions.gt(property, 42);
         actual = instance.createCriterion(property, Comparison.GREATER_THAN, 42);
         assertEquals(exptected.toString(), actual.toString());
-        
+
         exptected = Restrictions.ge(property, -42);
         actual = instance.createCriterion(property, Comparison.GREATER_EQUAL, -42);
         assertEquals(exptected.toString(), actual.toString());
-        
+
         exptected = Restrictions.lt(property, 42.2);
         actual = instance.createCriterion(property, Comparison.LESS_THAN, 42.2);
         assertEquals(exptected.toString(), actual.toString());
-        
+
         exptected = Restrictions.le(property, -42.2);
         actual = instance.createCriterion(property, Comparison.LESS_EQUAL, -42.2);
         assertEquals(exptected.toString(), actual.toString());
 
     }
-    
+
     @Test
     public void testIsPropertyName() {
         SessionFactory sf = SessionFactoryInitializer.getSessionFactory();
         ClassMetadata classMetadata = sf.getClassMetadata(Course.class);
-        
+
         assertTrue(instance.isPropertyName("code", classMetadata));
         assertTrue(instance.isPropertyName("department", classMetadata));
         assertFalse(instance.isPropertyName("foo", classMetadata));
     }
-    
+
     @Test
     public void testFindPropertyType() {
         SessionFactory sf = SessionFactoryInitializer.getSessionFactory();
         ClassMetadata classMetadata = sf.getClassMetadata(Course.class);
-        
+
         assertSame(String.class, instance.findPropertyType("code", classMetadata));
         assertSame(Boolean.class, instance.findPropertyType("active", classMetadata));
         assertSame(Department.class, instance.findPropertyType("department", classMetadata));
         assertNotSame(Integer.class, instance.findPropertyType("code", classMetadata));
     }
-    
-    
-    
+
+
+
     ////////////////////////// Mocks //////////////////////////
 
     protected class MockInnerBuilder implements CriteriaBuilder {
@@ -127,7 +128,7 @@ public abstract class AbstractCriterionBuilderTest {
                 return selector;
             }
         };
-        
+
         @Override
         public String createAssociationAlias(String associationPath) throws AssociationsLimitException {
             return "this";
@@ -137,9 +138,9 @@ public abstract class AbstractCriterionBuilderTest {
         public String createAssociationAlias(String associationPath, int joinType) throws AssociationsLimitException {
             return "this";
         }
-        
+
         @Override
-        public Criterion delegateToBuilder(String property, Comparison operator, String argument, Class<?> entityClass, String alias) 
+        public Criterion delegateToBuilder(String property, Comparison operator, String argument, Class<?> entityClass, String alias)
                 throws ArgumentFormatException, UnknownSelectorException, IllegalStateException {
             return new DefaultCriterionBuilder().createCriterion(property, operator, argument, entityClass, alias, parent);
         }
@@ -148,7 +149,7 @@ public abstract class AbstractCriterionBuilderTest {
         public ArgumentParser getArgumentParser() {
             return argumentParser;
         }
-        
+
         @Override
         public ClassMetadata getClassMetadata(Class<?> entityClass) {
             return sessionFactory.getClassMetadata(entityClass);
@@ -164,6 +165,10 @@ public abstract class AbstractCriterionBuilderTest {
             return "this.";
         }
 
+        @Override
+        public SessionFactoryImplementor getSessionFactory() {
+            throw new UnsupportedOperationException("Not implemented.");
+        }
     }
-    
+
 }

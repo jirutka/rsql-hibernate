@@ -47,13 +47,13 @@ import static org.junit.Assert.*;
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public class RSQL2CriteriaConverterImplTest {
-    
+
     private SessionFactory sessionFactory;
     private Mapper mapper;
     private RSQL2CriteriaConverterImpl instance;
     private InnerBuilder inner;
 
-    
+
     @Before
     public void setUp() throws Exception {
         sessionFactory = SessionFactoryInitializer.getSessionFactory();
@@ -68,20 +68,20 @@ public class RSQL2CriteriaConverterImplTest {
         instance.pushCriterionBuilder(new MockCriterionBuilder());
         inner = ((MockRSQL2CriteriaConverterImpl)instance).createInnerBuilder(Course.class);
     }
-    
-    
+
+
     ////////////////////////// Tests //////////////////////////
-       
+
     /**
      * Test if single comparison expression is routed to Criterion Builder well.
      */
     @Test
-    public void testInnerConvertDetached0() {        
+    public void testInnerConvertDetached0() {
         instance.setMapper(mapper);
         instance.pushCriterionBuilder(new MockCriterionBuilder() {
             @Override
-            public Criterion createCriterion(String property, Comparison operator, String argument, 
-                    Class<?> entityClass, String alias, CriteriaBuilder parent) 
+            public Criterion createCriterion(String property, Comparison operator, String argument,
+                    Class<?> entityClass, String alias, CriteriaBuilder parent)
                     throws ArgumentFormatException, UnknownSelectorException {
                 assertEquals("foo", property);
                 assertEquals(operator, Comparison.EQUAL);
@@ -89,31 +89,31 @@ public class RSQL2CriteriaConverterImplTest {
                 assertEquals(Course.class, entityClass);
                 assertEquals("this.", alias);
                 assertNotNull(parent);
-                
+
                 throw new AssertionError("This should be thrown!");
             }
-            
+
         });
-        
+
         Expression expression = new ComparisonExpression("foo", Comparison.EQUAL, "bar");
         try {
             inner.convert(expression, DetachedCriteria.forClass(Course.class));
             fail("Method createCriterion() was not called!");
         } catch (AssertionError ex) { /*OK*/ }
     }
-    
+
     /**
      * Test if composite expression is routed to Criterion Builder well.
      */
     @Test
-    public void testInnerConvertDetached1() {       
+    public void testInnerConvertDetached1() {
         instance.setMapper(mapper);
         instance.pushCriterionBuilder(new MockCriterionBuilder() {
             int call = 0;
 
             @Override
-            public Criterion createCriterion(String property, Comparison operator, String argument, 
-                    Class<?> entityClass, String alias, CriteriaBuilder parent) 
+            public Criterion createCriterion(String property, Comparison operator, String argument,
+                    Class<?> entityClass, String alias, CriteriaBuilder parent)
                     throws ArgumentFormatException, UnknownSelectorException {
                 if (call == 0) {
                     assertEquals("sel0", property);
@@ -127,7 +127,7 @@ public class RSQL2CriteriaConverterImplTest {
                     assertEquals("sel2", property);
                     assertEquals(operator, Comparison.LESS_THAN);
                     assertEquals("baz", argument);
-                    
+
                     throw new AssertionError("This should be thrown!");
                 }
                 assertNotNull(parent);
@@ -135,7 +135,7 @@ public class RSQL2CriteriaConverterImplTest {
                 return Restrictions.eq("null", "null");
             }
         });
-        
+
         Expression expression = new LogicalExpression(
                 new LogicalExpression(
                     new ComparisonExpression("sel0", Comparison.EQUAL, "foo"),
@@ -143,7 +143,7 @@ public class RSQL2CriteriaConverterImplTest {
                     new ComparisonExpression("sel1", Comparison.NOT_EQUAL, "bar")),
                 Logical.AND,
                 new ComparisonExpression("sel2", Comparison.LESS_THAN, "baz"));
-        
+
         try {
             inner.convert(expression, DetachedCriteria.forClass(Course.class));
             fail("Method createCriterion() was not called for third time!");
@@ -156,7 +156,7 @@ public class RSQL2CriteriaConverterImplTest {
     @Test
     public void testInnerConvertDetached2() {
         instance.pushCriterionBuilder(new MockCriterionBuilder());
-        
+
         DetachedCriteria expResult = DetachedCriteria
                 .forClass(Course.class, RSQL2CriteriaConverter.ROOT_ALIAS)
                 .add(Restrictions.and(
@@ -164,7 +164,7 @@ public class RSQL2CriteriaConverterImplTest {
                     Restrictions.or(
                         Restrictions.eq("bar", 42),
                         Restrictions.eq("baz", 42.2))));
-        
+
         Expression expression = new LogicalExpression(
                 new ComparisonExpression("foo", Comparison.EQUAL, "flynn"),
                 Logical.AND,
@@ -172,120 +172,120 @@ public class RSQL2CriteriaConverterImplTest {
                     new ComparisonExpression("bar", Comparison.EQUAL, "42"),
                     Logical.OR,
                     new ComparisonExpression("baz", Comparison.EQUAL, "42.2")));
-        
+
         DetachedCriteria result = DetachedCriteria.forClass(Course.class);
         inner.convert(expression, result);
-        
+
         assertEquals(expResult.toString(), result.toString());
     }
-    
-    
+
+
     @Test
     public void testCreateCriteria2arg() {
         DetachedCriteria expResult;
         expResult = DetachedCriteria.forClass(Course.class, RSQL2CriteriaConverter.ROOT_ALIAS)
                         .add(Restrictions.eq("foo", "bar"));
-        
+
         DetachedCriteria result = instance.createCriteria("foo==bar", Course.class);
         assertEquals("Expression: foo==bar", expResult.toString(), result.toString());
-        
+
         try {
             instance.createCriteria("invalid input ", Course.class);
             fail("Should raise RSQLException");
         } catch (RSQLException ex) { /* OK */ }
     }
-    
-    
+
+
     @Test
     public void testPushCriterionBuilder() {
         MockRSQL2CriteriaConverterImpl converter = new MockRSQL2CriteriaConverterImpl(sessionFactory);
         converter.setMapper(mapper);
-        
+
         converter.pushCriterionBuilder(new MockCriterionBuilder() {
             @Override
-            public Criterion createCriterion(String property, Comparison operator, String argument, 
-                    Class<?> entityClass, String alias, CriteriaBuilder parent) 
+            public Criterion createCriterion(String property, Comparison operator, String argument,
+                    Class<?> entityClass, String alias, CriteriaBuilder parent)
                     throws ArgumentFormatException, UnknownSelectorException {
                 fail("Should be at the bottom of builders stack");
                 return null;
             }
         });
-        
+
         converter.pushCriterionBuilder(new MockCriterionBuilder() {
             @Override
-            public Criterion createCriterion(String property, Comparison operator, String argument, 
-                    Class<?> entityClass, String alias, CriteriaBuilder parent) 
+            public Criterion createCriterion(String property, Comparison operator, String argument,
+                    Class<?> entityClass, String alias, CriteriaBuilder parent)
                     throws ArgumentFormatException, UnknownSelectorException {
                 // ok
                 return Restrictions.ne("foo", "notbar");
             }
         });
-        
+
         converter.pushCriterionBuilder(new MockCriterionBuilder() {
             @Override
             public boolean accept(String selector, Class<?> entityClass, CriteriaBuilder parent) {
                 return false;
             }
             @Override
-            public Criterion createCriterion(String property, Comparison operator, String argument, 
-                    Class<?> entityClass, String alias, CriteriaBuilder parent) 
+            public Criterion createCriterion(String property, Comparison operator, String argument,
+                    Class<?> entityClass, String alias, CriteriaBuilder parent)
                     throws ArgumentFormatException, UnknownSelectorException {
                 fail("Should not be accepted");
                 return null;
             }
         });
-        
+
         Expression expression = new ComparisonExpression("foo", Comparison.EQUAL, "bar");
-        
+
         DetachedCriteria expResult = DetachedCriteria.forClass(Course.class)
                 .add(Restrictions.ne("foo", "notbar"));
-        
+
         DetachedCriteria result = DetachedCriteria.forClass(Course.class);
         converter.createInnerBuilder(Course.class).convert(expression, result);
-        
+
         assertEquals(expResult.toString(), result.toString());
     }
-        
-    
+
+
     @Test
     public void testCreateAssociationAlias() {
         final String aliasPrefix = RSQL2CriteriaConverter.ALIAS_PREFIX;
-        
+
         instance.setAssociationsLimit(3);
-        
+
         instance.pushCriterionBuilder(new MockCriterionBuilder() {
             @Override
-            public Criterion createCriterion(String property, Comparison operator, String argument, 
-                    Class<?> entityClass, String alias, CriteriaBuilder parent) 
+            public Criterion createCriterion(String property, Comparison operator, String argument,
+                    Class<?> entityClass, String alias, CriteriaBuilder parent)
                     throws ArgumentFormatException, UnknownSelectorException {
                 assertEquals(aliasPrefix + "1", parent.createAssociationAlias("foo", Criteria.INNER_JOIN));
                 assertEquals(aliasPrefix + "2", parent.createAssociationAlias("bar", Criteria.LEFT_JOIN));
                 assertEquals(aliasPrefix + "1", parent.createAssociationAlias("foo", Criteria.LEFT_JOIN));
                 assertEquals(aliasPrefix + "3", parent.createAssociationAlias("baz", Criteria.FULL_JOIN));
-                
+
                 try {
                     parent.createAssociationAlias("qux");
                     fail("Should raise JoinsLimitException");
                 } catch (AssociationsLimitException ex) { /*OK*/ }
-                
+
                 throw new AssertionError("This should be thrown!");
             }
         });
-        
+
         Criteria criteria = sessionFactory.openSession().createCriteria(Course.class);
         Expression expression = new ComparisonExpression("foo", Comparison.EQUAL, "bar");
-        
+
         try {
             inner.convert(expression, criteria);
             fail("Method createCriterion() was not called!");
         } catch (AssertionError ex) { /*OK*/ }
-        
+
         int i = 0;
         Iterator<Subcriteria> it = ((CriteriaImpl) criteria).iterateSubcriteria();
         while (it.hasNext()) {
             Subcriteria sub = it.next();
             switch (i) {
-                case 0 : { 
+                case 0 : {
                     assertEquals("foo", sub.getPath());
                     assertEquals("alias1", sub.getAlias());
                     assertEquals(Criteria.INNER_JOIN, sub.getJoinType());
@@ -308,28 +308,28 @@ public class RSQL2CriteriaConverterImplTest {
             i++;
         }
         assertEquals("Should iterate over three subcriterias", 3, i);
-        
+
     }
-    
-    
+
+
     @Test
     public void testLoadAssociationAliases() {
         Expression expression = new ComparisonExpression("foo", Comparison.EQUAL, "bar");
-        
+
         instance.pushCriterionBuilder(new MockCriterionBuilder() {
             @Override
-            public Criterion createCriterion(String property, Comparison operator, String argument, 
-                    Class<?> entityClass, String alias, CriteriaBuilder parent) 
+            public Criterion createCriterion(String property, Comparison operator, String argument,
+                    Class<?> entityClass, String alias, CriteriaBuilder parent)
                     throws ArgumentFormatException, UnknownSelectorException {
                 assertEquals("givenAlias1", parent.createAssociationAlias("foo"));
                 assertEquals("givenAlias3", parent.createAssociationAlias("baz"));
                 assertEquals("givenAlias2", parent.createAssociationAlias("bar"));
-                
+
                 throw new AssertionError("This should be thrown!");
             }
         });
-        
-        
+
+
         Criteria criteria1 = sessionFactory.openSession()
                 .createCriteria(Course.class)
                     .createAlias("foo", "givenAlias1")
@@ -339,8 +339,8 @@ public class RSQL2CriteriaConverterImplTest {
             inner.convert(expression, criteria1);
             fail("Method createCriterion() was not called!");
         } catch (AssertionError ex) { /*OK*/ }
-        
-        
+
+
         Criteria criteria2 = sessionFactory.openSession()
                 .createCriteria(Course.class)
                     .createCriteria("foo", "givenAlias1")
@@ -351,24 +351,24 @@ public class RSQL2CriteriaConverterImplTest {
             fail("Method createCriterion() was not called!");
         } catch (AssertionError ex) { /*OK*/ }
     }
-    
-    
-    
-    
+
+
+
+
     ////////////////////////// Mocks //////////////////////////
-    
+
     private static class MockRSQL2CriteriaConverterImpl extends RSQL2CriteriaConverterImpl {
-        
+
         public MockRSQL2CriteriaConverterImpl(SessionFactory sessionFactory) {
             super(sessionFactory);
         }
-        
+
         public InnerBuilder createInnerBuilder(Class<?> entityClass) {
             return new InnerBuilder(entityClass);
         }
-        
+
     }
-    
+
     private static class MockCriterionBuilder extends AbstractCriterionBuilder {
 
         @Override
@@ -377,11 +377,11 @@ public class RSQL2CriteriaConverterImplTest {
         }
 
         @Override
-        public Criterion createCriterion(String property, Comparison operator, String argument, 
-                Class<?> entityClass, String alias, CriteriaBuilder parent) 
+        public Criterion createCriterion(String property, Comparison operator, String argument,
+                Class<?> entityClass, String alias, CriteriaBuilder parent)
                 throws ArgumentFormatException, UnknownSelectorException {
             return Restrictions.eq(property, argument);
-        }  
+        }
     }
-    
+
 }

@@ -34,22 +34,22 @@ import org.hibernate.annotations.NaturalId;
  */
 @Entity
 public class Course extends AbstractTestEntity {
-    
+
     @Column
     private boolean active;
-    
+
     @Column
     @NaturalId
     private String code;
-    
+
     @Column
     private Integer credits;
-    
+
     @ManyToOne
     private Department department;
 
-    
-    
+
+
     public boolean isActive() {
         return active;
     }
@@ -65,7 +65,7 @@ public class Course extends AbstractTestEntity {
     public void setCode(String code) {
         this.code = code;
     }
-    
+
     public Integer getCredits() {
         return credits;
     }

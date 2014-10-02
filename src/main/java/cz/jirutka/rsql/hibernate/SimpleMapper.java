@@ -30,16 +30,16 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Simple implementation of the {@link Mapper}.
- * 
+ *
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public class SimpleMapper implements Mapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(SimpleMapper.class);
-    
+
     private Map<Class<?>, Map<String, String>> mapping;
 
-    
+
     /**
      * Construct new <tt>SimpleMapper</tt> with zero initial capacity of the
      * entities map.
@@ -50,43 +50,43 @@ public class SimpleMapper implements Mapper {
     /**
      * Construct new <tt>SimpleMapper</tt> with the specified initial capacity
      * of the entities map.
-     * 
+     *
      * @param initialCapacity initial capacity of entities map
      */
     public SimpleMapper(int initialCapacity) {
         mapping = new HashMap<Class<?>, Map<String, String>>(initialCapacity);
     }
-    
-    
+
+
     @Override
     public String translate(String selector, Class<?> entityClass) {
         if (mapping.isEmpty()) return selector;
-        
+
         Map<String, String> map = mapping.get(entityClass);
         String property = (map != null) ? map.get(selector) : null;
-        
+
         if (property != null) {
             LOG.debug("Found mapping {} -> {}", selector, property);
             return property;
         }
-        
+
         return selector;
     }
 
-    
+
     /**
      * Add selectors -> property names mapping for given entity class.
-     * 
+     *
      * @param entityClass entity class
      * @param mapping mapping of selectors to property names
      */
     public void addMapping(Class<?> entityClass, Map<String, String> mapping) {
         this.mapping.put(entityClass, mapping);
     }
-    
+
     /**
      * Add one selector -> property name mapping for given entity class.
-     * 
+     *
      * @param entityClass entity class
      * @param selector Selector that identifies some element of an entry's content.
      * @param property Name of corresponding entity's property.
@@ -96,7 +96,7 @@ public class SimpleMapper implements Mapper {
     }
 
     /**
-     * @see SimpleMapper#setMapping(java.util.Map) 
+     * @see SimpleMapper#setMapping(java.util.Map)
      * @return The current mapping of all entities.
      */
     public Map<Class<?>, Map<String, String>> getMapping() {
@@ -105,11 +105,11 @@ public class SimpleMapper implements Mapper {
 
     /**
      * Set the mapping of selectors to property names per entity class.
-     * 
+     *
      * @param Mapping {entity class -> {selector -> property}}
      */
     public void setMapping(Map<Class<?>, Map<String, String>> mapping) {
         this.mapping = mapping;
     }
-    
+
 }

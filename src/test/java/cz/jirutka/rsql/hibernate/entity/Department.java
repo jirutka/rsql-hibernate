@@ -34,15 +34,15 @@ import org.hibernate.annotations.NaturalId;
  */
 @Entity
 public class Department extends AbstractTestEntity {
-    
+
     @Column
     @NaturalId
     private Integer code;
-    
+
     @ManyToOne
     private Person head;
 
-    
+
     public Integer getCode() {
         return code;
     }
@@ -58,5 +58,5 @@ public class Department extends AbstractTestEntity {
     public void setHead(Person head) {
         this.head = head;
     }
-    
+
 }

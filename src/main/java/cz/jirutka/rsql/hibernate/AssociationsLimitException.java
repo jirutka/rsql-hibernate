@@ -29,11 +29,11 @@ package cz.jirutka.rsql.hibernate;
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public class AssociationsLimitException extends RuntimeException {
-   
+
     /**
      * Construct a <tt>AssociationsLimitException</tt> with specified joins limit.
-     * 
-     * @param joinsLimit 
+     *
+     * @param joinsLimit
      */
     public AssociationsLimitException(int joinsLimit) {
         super("Joins limit (" + joinsLimit + ") exceeded");
