@@ -26,6 +26,7 @@ package cz.jirutka.rsql.hibernate;
 import cz.jirutka.rsql.parser.model.Comparison;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +73,13 @@ public class AssociationsCriterionBuilder extends AbstractCriterionBuilder {
             if (!isPropertyName(property, metadata)) {
                 throw new UnknownSelectorException(path[i]);
             }
-            lastClass = findPropertyType(property, metadata);
+            Type type = metadata.getPropertyType(property);
+
+            if (type.isCollectionType() && type.isAssociationType()) {
+                lastClass = findCollectionElementType(type, builder);
+            } else {
+                lastClass = type.getReturnedClass();
+            }
             
             LOG.trace("Nesting level {}: property '{}' of entity {}",
                     new Object[]{i, property, lastClass.getSimpleName()});

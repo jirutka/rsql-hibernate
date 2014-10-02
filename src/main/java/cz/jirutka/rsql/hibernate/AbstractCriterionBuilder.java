@@ -28,6 +28,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.type.CollectionType;
+import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -283,9 +285,22 @@ public abstract class AbstractCriterionBuilder {
      * @return The java type class of given property.
      * @throws HibernateException If entity does not contain such property.
      */
-    protected Class<?> findPropertyType(String property, ClassMetadata classMetadata) 
+    protected Class<?> findPropertyType(String property, ClassMetadata classMetadata)
             throws HibernateException {
         return classMetadata.getPropertyType(property).getReturnedClass();
+    }
+
+    protected Class<?> findCollectionElementType(String property, Class<?> entityClass, CriteriaBuilder builder) {
+        ClassMetadata metadata = builder.getClassMetadata(entityClass);
+        CollectionType colType = (CollectionType) metadata.getPropertyType(property);
+
+        return findCollectionElementType(colType, builder);
+    }
+
+    protected Class<?> findCollectionElementType(Type collectionType, CriteriaBuilder builder) {
+        Type elemType = ((CollectionType) collectionType).getElementType(builder.getSessionFactory());
+
+        return elemType.getReturnedClass();
     }
 
     /**

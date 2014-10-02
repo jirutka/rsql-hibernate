@@ -25,7 +25,9 @@ package cz.jirutka.rsql.hibernate;
 
 import cz.jirutka.rsql.parser.model.Comparison;
 import org.hibernate.Criteria;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.metadata.ClassMetadata;
 
 /**
@@ -115,5 +117,7 @@ public interface CriteriaBuilder {
      * @return root alias
      */
     String getRootAlias();
-    
+
+    SessionFactoryImplementor getSessionFactory();
+
 }

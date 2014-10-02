@@ -42,8 +42,10 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.impl.CriteriaImpl;
 import org.hibernate.impl.CriteriaImpl.Subcriteria;
+import org.hibernate.impl.SessionFactoryImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -412,7 +414,11 @@ public class RSQL2CriteriaConverterImpl implements RSQL2CriteriaConverter {
         public String getRootAlias() {
             return rootAlias;
         }
-    
+
+        @Override
+        public SessionFactoryImplementor getSessionFactory() {
+            return (SessionFactoryImpl) sessionFactory;
+        }
     }
     
 }
