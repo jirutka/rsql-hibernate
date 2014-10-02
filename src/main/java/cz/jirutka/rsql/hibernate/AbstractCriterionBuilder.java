@@ -246,7 +246,7 @@ public abstract class AbstractCriterionBuilder {
      *
      * @param argument
      * @return Return <tt>true</tt> if argument contains wildcard
-     *         {@link #LIKE_WILDCHAR}.
+     *         {@link #LIKE_WILDCARD}.
      */
     protected boolean containWildcard(Object argument) {
         if (!(argument instanceof String)) {
