@@ -32,81 +32,87 @@ import static org.junit.Assert.*;
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 public class DefaultArgumentParserTest {
-    
+
     protected ArgumentParser instance = new DefaultArgumentParser();
-    
+
 
     @Test
     public void testParseArgument() throws Exception {
         String argument;
         Object expected;
         Object actual;
-        
+
         argument = "string";
         expected = "string";
         actual = instance.parse(argument, String.class);
         assertEquals(expected, actual);
-        
+
         argument = "123456";
         expected = 123456;
         actual = instance.parse(argument, Integer.class);
         assertEquals(expected, actual);
-        
+
         argument = "true";
         expected = true;
         actual = instance.parse(argument, Boolean.class);
         assertEquals(expected, actual);
-        
+
         argument = "FOO";
         expected = MockEnum.FOO;
         actual = instance.parse(argument, MockEnum.class);
         assertEquals(expected, actual);
-        
+
         argument = "42.22";
         expected = new Float(42.22);
         actual = instance.parse(argument, Float.class);
         assertEquals(expected, actual);
-        
+
         argument = "42.22";
         expected = 42.22;
         actual = instance.parse(argument, Double.class);
         assertEquals(expected, actual);
-        
+
         argument = "123456789123456789";
         expected = 123456789123456789L;
         actual = instance.parse(argument, Long.class);
         assertEquals(expected, actual);
-        
+
         argument = "2011-08-26";
         expected = new GregorianCalendar(2011, 7, 26).getTime();
         actual = instance.parse(argument, Date.class);
         assertEquals(expected, actual);
-        
+
         argument = "2011-08-26T14:15:30";
         expected = new GregorianCalendar(2011, 7, 26, 14, 15, 30).getTime();
         actual = instance.parse(argument, Date.class);
         assertEquals(expected, actual);
-        
+
+        final Date testDate = new Date();
+        argument = testDate.getTime() + "";
+        expected = testDate;
+        actual = instance.parse(argument, Date.class);
+        assertEquals(expected, actual);
+
         argument = "foo";
         expected = new MockValueOfType();
         actual = instance.parse(argument, MockValueOfType.class);
         assertTrue(actual instanceof MockValueOfType);
-        
+
     }
-    
-    
-    
+
+
+
     ////////////////////////// Mocks //////////////////////////
-    
+
     protected enum MockEnum {
         FOO, BAR;
     }
-    
+
     protected static class MockValueOfType {
-        
+
         public static MockValueOfType valueOf(String s) {
             return new MockValueOfType();
         }
     }
-    
+
 }
